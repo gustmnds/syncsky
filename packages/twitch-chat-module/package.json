@@ -1,0 +1,13 @@
+{
+  "name": "@syncsky/twitch-chat-module",
+  "version": "0.0.0",
+  "packageManager": "yarn@4.2.2",
+  "devDependencies": {
+    "typescript": "^5.8.2"
+  },
+  "dependencies": {
+    "@twurple/api": "^7.2.1",
+    "@twurple/auth": "^7.2.1",
+    "@twurple/chat": "^7.2.1"
+  }
+}
