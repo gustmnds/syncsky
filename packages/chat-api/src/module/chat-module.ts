@@ -1,14 +1,21 @@
-import { ChatManager } from "./chat-manager";
-import { ChatMessage } from "./dto/chat-message";
+import EventEmitter from "eventemitter3";
+import { ChatManager } from "../chat-manager";
+import { ChatMessage } from "../dto/chat-message";
 
-export class ChatModule {
+interface ChatModuleEvents {
+    disconnect: [];
+}
+
+export class ChatModule extends EventEmitter<ChatModuleEvents> {
     constructor(
         public readonly platform: string,
         private readonly manager: ChatManager
-    ) {}
+    ) {
+        super();
+    }
     
-    public addMessage(message: ChatMessage) {
-        this.manager.pushMessage(message, this.platform);
+    public addMessage(message: Omit<ChatMessage, "platform">) {
+        this.manager.pushMessage({...message, platform: this.platform });
     }
 
     public removeMessageById(messageId: string) {

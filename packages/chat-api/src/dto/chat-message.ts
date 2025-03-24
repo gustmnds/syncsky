@@ -3,6 +3,7 @@ export interface ChatEmoji {
 }
 
 export interface ChatMessage {
+    platform: string;
     messageId: string;
     authorId: string;
     authorName: string;

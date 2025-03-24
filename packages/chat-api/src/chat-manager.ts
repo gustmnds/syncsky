@@ -1,20 +1,16 @@
 import { EventEmitter } from "eventemitter3"
 import { ChatMessage } from "./dto/chat-message";
-import { ChatModuleManager } from "./chat-module-manager";
-import { ChatModule } from "./chat-module";
+import { ChatModuleManager } from "./module/chat-module-manager";
+import { ChatExtensionManager } from "./extension/chat-extension-manager";
 
 interface ChatManagerEvents {
-    onMessage: [key: string, value: string];
     onSeedChange: [seed: number];
-}
-
-export interface ChatPlatformMessage extends ChatMessage {
-    platform: string;
+    disconnect: [];
 }
 
 export interface ChatMessageFilter extends Partial<
     Pick<
-        ChatPlatformMessage,
+        ChatMessage,
         | "platform"
         | "messageId"
         | "authorId"
@@ -27,15 +23,21 @@ export type ChatManagerSettings = {
 
 export class ChatManager extends EventEmitter<ChatManagerEvents> {
     public seed: number = 0;
-    public messages: ChatPlatformMessage[] = [];
+    public messages: ChatMessage[] = [];
     public readonly moduleManager = new ChatModuleManager(this);
+    public readonly extensionManager = new ChatExtensionManager();
 
     constructor(private readonly settings: ChatManagerSettings) {
         super();
     }
 
-    public pushMessage(message: ChatMessage, platform: string) {
-        this.messages.push({ ...message, platform });
+    public disconnect() {
+        this.emit("disconnect");
+    }
+
+    public async pushMessage(message: ChatMessage) {
+        await this.extensionManager.processMessage(message);
+        this.messages.push({ ...message });
         this.messages.splice(0, this.messages.length - this.settings.maxMessages);
         this.seed++;
         this.emit("onSeedChange", this.seed);
@@ -47,7 +49,7 @@ export class ChatManager extends EventEmitter<ChatManagerEvents> {
         this.emit("onSeedChange", this.seed);
     }
 
-    private filterMatch(message: ChatPlatformMessage, filter: ChatMessageFilter) {
+    private filterMatch(message: ChatMessage, filter: ChatMessageFilter) {
         if (filter.platform && filter.platform !== message.platform) {
             return false;
         }
@@ -63,16 +65,3 @@ export class ChatManager extends EventEmitter<ChatManagerEvents> {
         return true;
     }
 }
-
-
-/*
-
-
-moduleManager
-
-manager.createModule(platform: name) = 
-
-
-
-
-*/

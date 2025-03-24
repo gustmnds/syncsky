@@ -2,6 +2,7 @@ import { ApiClient, HelixChatBadgeSet } from "@twurple/api";
 
 export class TwitchBadgeClient {
     private badges: Record<string, HelixChatBadgeSet> = {};
+    private emojis: Record<string, string> = {};
 
     constructor (private readonly apiClient: ApiClient) {}
 
@@ -34,5 +35,11 @@ export class TwitchBadgeClient {
             }
             return list;
         }, []);
+    }
+
+    public getEmojis(emojis: string[]): Record<string, string> {
+        return Object.fromEntries(
+            emojis.map(id => [id, `https://static-cdn.jtvnw.net/emoticons/v2/${id}/default/dark/2.0`])
+        );
     }
 }
