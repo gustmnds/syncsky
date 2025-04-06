@@ -3,6 +3,8 @@ import { ChatManager } from "../chat-manager";
 import { ChatMessage } from "../dto/chat-message";
 
 interface ChatModuleEvents {
+    stop: [];
+    resume: [];
     disconnect: [];
 }
 

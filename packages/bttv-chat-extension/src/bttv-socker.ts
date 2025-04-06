@@ -10,7 +10,6 @@ export class BTTVSocket extends EventEmitter {
     }
 
     private handleMessage(message: MessageEvent) {
-        console.log(message);
-        console.log(message.data);
+        
     }
 }

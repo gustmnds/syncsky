@@ -24,3 +24,8 @@ export const MessageBadgeIcon = style({
     borderRadius: 3,
     verticalAlign: "middle"
 })
+
+export const MessageSegment = style({
+    marginRight: "4.5px",
+    display: "inline-block"
+});

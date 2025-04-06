@@ -1,63 +1,68 @@
-import { ChatMessage } from "@syncsky/chat-api";
+import { ChatMessage, ChatSegment, ChatSegmentType, Utils } from "@syncsky/chat-api";
 import { ChatExtension } from "@syncsky/chat-api/src/extension/chat-extension";
-import { BTTVSocket } from "./src/bttv-socker";
 import axios from "axios"
 
 interface Emote {
     id: string
-    code: string
-    imageType: string
-    animated: boolean
-    userId: string
-    modifier: boolean
     width?: number
     height?: number
 }
-  
+
+
+interface GlobalEmote {
+    id: string
+    code: string
+    width?: number
+    height?: number
+}
+
+interface UserEmotes {
+    sharedEmotes: {
+        id: string
+        code: string
+        width?: number
+        height?: number
+    }[]
+}
 
 export class BTTVChatExtension extends ChatExtension {
+    private readonly emotes: Record<string, Emote> = {};
     private readonly api = axios.create({ baseURL: "https://api.betterttv.net/3" });
-    private emotes: Record<string,string> = {};
+
+    constructor(private readonly channelId: string) {
+        super();
+    }
 
     async initialize(): Promise<void> {
-        const response = await this.api.get<Emote[]>("/cached/emotes/global");
+        const [globalEmotes, userEmotes] = await Promise.all([
+            await this.api.get<GlobalEmote[]>("/cached/emotes/global"),
+            await this.api.get<UserEmotes>("/cached/users/twitch/" + this.channelId)
+        ]);
 
-        for (const emote of response.data) {
-            this.emotes[emote.code] = emote.id;
+        for (const { id, code, height, width } of globalEmotes.data) {
+            this.emotes[code] = { id, height, width };
+        }
+
+        for (const { id, code, width, height } of userEmotes.data.sharedEmotes) {
+            this.emotes[code] = { id, width, height }
         }
     }
 
     async onMessage(message: ChatMessage): Promise<void> {
-        const content = [];
+        message.segments = Utils.mapSegments(message.segments, segment => {
+            if (typeof segment !== "string") return;
 
-        for (var i = 0; i < message.content.length; i++) {
-            const current = message.content[i];
-            if (typeof current !== "string") {
-                content.push(current);
-                continue;
-            }
-
-            const segments = current.split(" ");
-            let text = [];
-            for (const segment of segments) {
-                if (segment in this.emotes) {
-                    if (text.length) {
-                        content.push(text.join(" "));
-                        text = [];
+            if (segment in this.emotes) {
+                const emote = this.emotes[segment];
+                return {
+                    type: ChatSegmentType.emote,
+                    url: `https://cdn.betterttv.net/emote/${emote.id}/2x.webp`,
+                    options: {
+                        width: emote.width,
+                        height: emote.height
                     }
-                    content.push({ emojiUrl: `https://cdn.betterttv.net/emote/${this.emotes[segment]}/2x.webp` });
-                } else {
-                    text.push(segment);
                 }
             }
-
-            if (text.length) {
-                content.push(text.join(" "));
-            }
-        }
-
-        console.log(content);
-
-        message.content = content;
+        });
     }
 }

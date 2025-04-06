@@ -1,0 +1,11 @@
+{
+  "name": "@syncsky/youtube-chat-module",
+  "version": "0.0.0",
+  "packageManager": "yarn@4.2.2",
+  "devDependencies": {
+    "typescript": "^5.8.2"
+  },
+  "dependencies": {
+    "youtubei.js": "^13.3.0"
+  }
+}

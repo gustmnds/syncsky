@@ -1,0 +1,20 @@
+{
+  "name": "@syncsky/chat-agent",
+  "version": "0.0.0",
+  "packageManager": "yarn@4.2.2",
+  "scripts": {
+    "dev": "tsx -r dotenv/config src/index.ts"
+  },
+  "dependencies": {
+    "@syncsky/bttv-chat-extension": "0.0.0",
+    "@syncsky/chat-api": "0.0.0",
+    "@syncsky/twitch-chat-module": "0.0.0",
+    "@syncsky/youtube-chat-module": "0.0.0",
+    "socket.io": "^4.8.1"
+  },
+  "devDependencies": {
+    "dotenv": "^16.4.7",
+    "tsx": "^4.19.3",
+    "typescript": "^5.8.2"
+  }
+}
