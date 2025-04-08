@@ -1,11 +1,15 @@
 import "@/styles/global.css";
-import { ChatContextProvider } from "./context/chat/chat-contenxt-provider";
-import { ChatPage } from "./pages/chat/chat.page";
+import { BrowserRouter, Route, Routes } from "react-router"
+import { ChatPage } from "./pages/chat";
+import { Template } from "./pages/template/template.page";
 
 export function App() {
     return (
-        <ChatContextProvider>
-            <ChatPage/>
-        </ChatContextProvider>
+        <BrowserRouter>
+            <Routes>
+                <Route index element={<ChatPage/>}/>
+                <Route path="/template" element={<Template/>}/>
+            </Routes>
+        </BrowserRouter>
     )
 }
