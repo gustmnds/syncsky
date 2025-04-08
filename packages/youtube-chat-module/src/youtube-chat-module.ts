@@ -1,9 +1,5 @@
+import { Innertube, UniversalCache, YTNodes, YT, Misc } from 'youtubei.js';
 import { ChatModule, ChatModuleManager, ChatSegment, ChatSegmentType, Utils } from "@syncsky/chat-api";
-import { Innertube, UniversalCache, YTNodes, Log } from 'youtubei.js';
-import { Author, EmojiRun, TextRun } from "youtubei.js/dist/src/parser/misc";
-import { LiveChat } from "youtubei.js/dist/src/parser/youtube";
-
-Log.setLevel();
 
 export interface YoutubeChatSettings {
     channelId: string;
@@ -11,7 +7,7 @@ export interface YoutubeChatSettings {
 }
 
 export class YoutubeChatModule {
-    private chat?: LiveChat;
+    private chat?: YT.LiveChat;
 
     private constructor(
         private readonly youtube: Innertube,
@@ -27,7 +23,7 @@ export class YoutubeChatModule {
         return new YoutubeChatModule(youtube, chatModule, opts);
     }
 
-    private parseSegments(segments: Array<EmojiRun | TextRun>): ChatSegment[] {
+    private parseSegments(segments: Array<Misc.EmojiRun | Misc.TextRun>): ChatSegment[] {
         return segments.map((segment) => {
             if ("emoji" in segment) {
                 return {
@@ -36,14 +32,11 @@ export class YoutubeChatModule {
                 }
             }
 
-            return {
-                type: ChatSegmentType.text,
-                content: segment.text
-            };
+            return segment.text;
         })
     }
 
-    private parseBadges(badges: Author["badges"]): string[] {
+    private parseBadges(badges: Misc.Author["badges"]): string[] {
         return badges.reduce((total, badge) => {
             
             if (badge.is(YTNodes.LiveChatAuthorBadge)) {
@@ -59,30 +52,42 @@ export class YoutubeChatModule {
         }, Array<string>());
     }
 
-    private setupChatHandler(chat: LiveChat) {
+    private removeChatMessage(removeChatItemAction: YTNodes.RemoveChatItemAction) {
+        this.chatModule.removeMessageById(removeChatItemAction.target_item_id);
+    }
+
+    private removeAuthorMessages(removeChatItemByAuthorAction: YTNodes.RemoveChatItemByAuthorAction) {
+        this.chatModule.removeMessagesByAuthorId(removeChatItemByAuthorAction.external_channel_id);
+    }
+
+    private addChatMessage(addChatItemAction: YTNodes.AddChatItemAction) {
+        const message = addChatItemAction.item;
+        if (!message.is(YTNodes.LiveChatTextMessage)) return;
+        if (!message.message.runs) return;
+
+        this.chatModule.addMessage({
+            messageId: message.id,
+            author: {
+                authorColor: Utils.getColorFromString(message.author.id),
+                authorId: message.author.id,
+                authorName: message.author.name
+            },
+            modifiers: [],
+            badges: this.parseBadges(message.author.badges),
+            segments: this.parseSegments(message.message.runs)
+        })
+    }
+
+    private setupChatHandler(chat: YT.LiveChat) {
         chat.on("chat-update", action => {
-            if (!action.is(YTNodes.AddChatItemAction)) return;
-            const item = action.as(YTNodes.AddChatItemAction).item;
-        
-            if (!item.is(YTNodes.LiveChatTextMessage)) return;
-            const message = item.as(YTNodes.LiveChatTextMessage);
-
-            if (!message.message.runs) return;
-
-            this.chatModule.addMessage({
-                messageId: message.id,
-                author: {
-                    authorColor: Utils.getColorFromString(message.author.id),
-                    authorId: message.author.id,
-                    authorName: message.author.name
-                },
-                modifiers: [],
-                badges: this.parseBadges(message.author.badges),
-                segments: this.parseSegments(message.message.runs)
-            })
-
-            message.author.badges
-        });
+            if (action.is(YTNodes.AddChatItemAction)) {
+                this.addChatMessage(action);
+            } else if (action.is(YTNodes.RemoveChatItemAction)) {
+                this.removeChatMessage(action);
+            } else if (action.is(YTNodes.RemoveChatItemByAuthorAction)) {
+                this.removeAuthorMessages(action);
+            }
+        })
     }
 
     private async setupChat(force = false) {
@@ -107,10 +112,19 @@ export class YoutubeChatModule {
         const streamInfo = await this.youtube.getInfo(videoId);
         this.chat = streamInfo.getLiveChat();
         this.setupChatHandler(this.chat);
-        this.chat.start();
     }
 
     private async setupModule() {
         this.setupChat();
+
+        this.chatModule.on("stop", () => {
+            console.log("stop");
+            this.chat?.stop()
+        })
+
+        this.chatModule.on("resume", () => {
+            console.log("resume");
+            this.chat?.start();
+        })
     }
 }

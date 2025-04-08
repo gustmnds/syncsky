@@ -19,7 +19,7 @@ export interface ChatEmoteSegment {
     };
 };
 
-export type ChatSegment = string | ChatTextSegment | ChatEmoteSegment;
+export type ChatSegment = ChatTextSegment | ChatEmoteSegment;
 
 export enum ChatMessageModifier {
     GIGANTIC_EMOTE

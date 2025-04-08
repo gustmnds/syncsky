@@ -49,7 +49,9 @@ export class BTTVChatExtension extends ChatExtension {
     }
 
     async onMessage(message: ChatMessage): Promise<void> {
+        console.log("CALL!");
         message.segments = Utils.mapSegments(message.segments, segment => {
+            console.log("segment", segment);
             if (typeof segment !== "string") return;
 
             if (segment in this.emotes) {
