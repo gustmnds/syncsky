@@ -1,0 +1,19 @@
+{
+  "binary": "syncsky-chat-agent.exe",
+  "entryPoint": "./src/index.ts",
+  "icon": "./assets/icon.ico",
+  "outputDir": "./build",
+  "envFile": ".env.develop",
+  "seaConfig": {
+    "disableExperimentalSEAWarning": true
+  },
+  "versionInfo": {
+    "CompanyName": "Syncsky",
+    "ProductName": "Syncsky Agent",
+    "FileDescription": "Syncsky Chat Agent",
+    "FileVersion": "1.0.0",
+    "ProductVersion": "1.0.0",
+    "InternalName": "syncsky-agent",
+    "LegalCopyright": "Copyright Syncsky"
+  }
+}

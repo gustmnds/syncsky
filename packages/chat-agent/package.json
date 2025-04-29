@@ -3,16 +3,25 @@
   "version": "0.0.0",
   "packageManager": "yarn@4.2.2",
   "scripts": {
-    "dev": "tsx -r dotenv/config src/index.ts"
+    "dev": "tsx watch -r dotenv/config src/index.ts",
+    "build": "nodebuilder node-build.json"
   },
   "dependencies": {
+    "@syncsky/7tv-chat-extension": "0.0.0",
     "@syncsky/bttv-chat-extension": "0.0.0",
     "@syncsky/chat-api": "0.0.0",
-    "@syncsky/twitch-chat-module": "0.0.0",
-    "@syncsky/youtube-chat-module": "0.0.0",
-    "socket.io": "^4.8.1"
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "http-proxy-middleware": "^3.0.5",
+    "mime-types": "^3.0.1",
+    "socket.io": "^4.8.1",
+    "xhr2": "^0.2.1"
   },
   "devDependencies": {
+    "@syncsky/node-builder": "0.0.0",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.1",
+    "@types/mime-types": "^2.1.4",
     "dotenv": "^16.4.7",
     "tsx": "^4.19.3",
     "typescript": "^5.8.2"
