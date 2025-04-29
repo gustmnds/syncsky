@@ -1,0 +1,13 @@
+{
+  "name": "@syncsky/chat-ui",
+  "version": "0.0.0",
+  "packageManager": "yarn@4.2.2",
+  "dependencies": {
+    "@syncsky/chat-api": "0.0.0",
+    "react": "^19.1.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.1.2",
+    "typescript": "^5.8.3"
+  }
+}

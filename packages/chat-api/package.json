@@ -3,10 +3,13 @@
   "version": "0.0.0",
   "packageManager": "yarn@4.2.2",
   "devDependencies": {
+    "@types/react": "^19.1.2",
     "tsx": "^4.19.3",
     "typescript": "^5.8.2"
   },
   "dependencies": {
+    "browser-or-node": "^3.0.0",
+    "crc-32": "^1.2.2",
     "eventemitter3": "^5.0.1"
   }
 }

@@ -1,4 +1,4 @@
-import { ApiClient, HelixChatBadgeSet, HelixChatBadgeVersion } from "@twurple/api";
+import { ApiClient, HelixChatBadgeSet } from "@twurple/api";
 import { ChatMessage } from "@twurple/chat";
 
 export class TwitchBadgeClient {
@@ -38,6 +38,6 @@ export class TwitchBadgeClient {
         const badge = this.badges[name].getVersion(version);
         if (!badge) return;
 
-        return badge.getImageUrl(1);
+        return badge.getImageUrl(4);
     }
 }

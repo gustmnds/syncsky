@@ -1,5 +1,10 @@
+export * from "./src/dto"
 export * from "./src/chat-manager"
 export * from "./src/module/chat-module"
 export * from "./src/module/chat-module-manager"
-export * from "./src/dto/chat-message"
-export * as Utils from "./src/utils";
+export * from "./src/extension/chat-extension"
+export * from "./src/extension/chat-extension-manager"
+export * from "./src/plugin/plugin"
+export * from "./src/plugin/plugin-module"
+export * from "./src/plugin/plugin-ui"
+export * as Utils from "./src/utils"

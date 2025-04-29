@@ -1,0 +1,8 @@
+{
+  "json.schemas": [
+    {
+      "fileMatch": ["node-build.json"],
+      "url": "./packages/node-builder/builder.schema.json"
+    }
+  ]
+}

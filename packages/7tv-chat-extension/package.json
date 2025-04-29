@@ -1,0 +1,13 @@
+{
+  "name": "@syncsky/7tv-chat-extension",
+  "version": "0.0.0",
+  "packageManager": "yarn@4.2.2",
+  "devDependencies": {
+    "typescript": "^5.8.2"
+  },
+  "dependencies": {
+    "@syncsky/chat-api": "0.0.0",
+    "axios": "^1.8.3",
+    "eventemitter3": "^5.0.1"
+  }
+}

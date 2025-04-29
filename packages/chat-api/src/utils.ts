@@ -1,17 +1,11 @@
+import CRC32 from "crc-32"
 import { ChatSegment } from "@syncsky/chat-api";
 
 export function getColorFromString(input: string) {
-    let hash = 0;
-
-    for (let i = 0; i < input.length; i++) {
-        hash = input.charCodeAt(i) + ((hash << 5) - hash);
-        hash = hash & 0xFFFFFFFF;
-    }
-
-    const hue = Math.abs(hash) % 360;
-    const saturation = 70 + (Math.abs(hash) % 30);
-    const lightness = 50 + (Math.abs(hash) % 20);
-
+    const hash = CRC32.str(input, 0xFFFFFFFF) >>> 0;
+    const hue = hash % 360;
+    const saturation = 70 + (hash % 30);
+    const lightness = 50 + (hash % 20);
     return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
 }
 
@@ -24,7 +18,7 @@ export function mapSegments(
     if (typeof message !== "string") {
         for (const segment of message) {
             if (typeof segment == "string") {
-                finalMessage.push(...mapSegments(segment, callback));    
+                finalMessage.push(...mapSegments(segment, callback));
             } else {
                 finalMessage.push(callback(segment) || segment);
             }

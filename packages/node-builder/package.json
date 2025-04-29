@@ -1,0 +1,23 @@
+{
+  "name": "@syncsky/node-builder",
+  "version": "0.0.0",
+  "packageManager": "yarn@4.2.2",
+  "type": "module",
+  "scripts": {
+    "build": "esbuild src/cli.ts --minify --bundle --format=esm --platform=node --packages=external --outfile=dist/cli.js"
+  },
+  "bin": {
+    "nodebuilder": "./dist/cli.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.5.0",
+    "esbuild": "^0.25.2",
+    "pe-library": "^1.0.1",
+    "postject": "^1.0.0-alpha.6",
+    "resedit": "^2.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.1",
+    "typescript": "^5.8.3"
+  }
+}

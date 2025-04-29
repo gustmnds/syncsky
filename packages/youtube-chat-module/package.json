@@ -3,9 +3,13 @@
   "version": "0.0.0",
   "packageManager": "yarn@4.2.2",
   "devDependencies": {
+    "@types/react": "^19.1.2",
+    "esbuild": "^0.25.3",
     "typescript": "^5.8.2"
   },
   "dependencies": {
+    "@syncsky/chat-ui": "0.0.0",
+    "react": "^19.1.0",
     "youtubei.js": "^13.3.0"
   }
 }

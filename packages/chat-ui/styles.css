@@ -1,0 +1,80 @@
+/* message */
+.message {
+    display: inline;
+    line-height: 1.5em;
+    color: #eaeaea;
+    font-family: arial, sans-serif;
+}
+
+.author-details {
+    display: inline;
+    vertical-align: middle;
+}
+
+.author {
+    display: inline;
+    vertical-align: middle;
+    font-weight: 700;
+}
+
+.badges {
+    display: inline;
+}
+
+.badge {
+    display: inline;
+    vertical-align: middle;
+    margin-right: 0.2em;
+    width: 1em;
+    height: 1em;
+}
+
+.content {
+    font-weight: 700;
+    vertical-align: middle;
+}
+
+.emote-container {
+    display: inline-block;
+    margin-inline: 0.2em;
+}
+
+.emote {
+    display: inline;
+    vertical-align: middle;
+    margin-block: 2px;
+    width: calc(1em * var(--width));
+    height: calc(1em * var(--height));
+}
+
+.gigantic-emote-container {
+    display: block;
+}
+
+.gigantic-emote {
+    width: 4em;
+    height: 4em;
+}
+
+.message[data-deleted="true"] {
+    display: none;
+}
+
+/*notificaiton-base*/
+.notification {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: flex-start;
+    gap: 8px;
+    color: white;
+    border-bottom: 1px solid #30303A;
+    padding-block: 11px;
+    padding-inline: 8px;
+}
+
+.notification-content {
+    display: flex;
+    flex-direction: column;
+}

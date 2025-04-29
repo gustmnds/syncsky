@@ -1,5 +1,6 @@
-import { ChatMessage, ChatSegment, ChatSegmentType, Utils } from "@syncsky/chat-api";
+import { ChatBaseEvent, ChatMessageEvent, ChatSegmentType, isEvent, Utils } from "@syncsky/chat-api";
 import { ChatExtension } from "@syncsky/chat-api/src/extension/chat-extension";
+import { ChatExtensionManager } from "@syncsky/chat-api/src/extension/chat-extension-manager";
 import axios from "axios"
 
 interface Emote {
@@ -25,46 +26,62 @@ interface UserEmotes {
     }[]
 }
 
-export class BTTVChatExtension extends ChatExtension {
+interface BTTVChatExtensionProps {
+    channelId: string;
+}
+
+export class BTTVChatExtension {
     private readonly emotes: Record<string, Emote> = {};
     private readonly api = axios.create({ baseURL: "https://api.betterttv.net/3" });
 
-    constructor(private readonly channelId: string) {
-        super();
+    private constructor(
+        private readonly extension: ChatExtension,
+        private readonly opts: BTTVChatExtensionProps
+    ) {
+        this.initialize();
+    };
+
+    public static register(chatExtensionManager: ChatExtensionManager, opts: BTTVChatExtensionProps) {
+        const extension = chatExtensionManager.createExtension();
+        return new BTTVChatExtension(extension, opts);
     }
 
-    async initialize(): Promise<void> {
+    private async loadEmotes(): Promise<void> {
         const [globalEmotes, userEmotes] = await Promise.all([
             await this.api.get<GlobalEmote[]>("/cached/emotes/global"),
-            await this.api.get<UserEmotes>("/cached/users/twitch/" + this.channelId)
+            await this.api.get<UserEmotes>("/cached/users/twitch/" + this.opts.channelId).catch(() => undefined)
         ]);
 
         for (const { id, code, height, width } of globalEmotes.data) {
             this.emotes[code] = { id, height, width };
         }
 
-        for (const { id, code, width, height } of userEmotes.data.sharedEmotes) {
-            this.emotes[code] = { id, width, height }
+        if (userEmotes) {
+            for (const { id, code, width, height } of userEmotes.data.sharedEmotes) {
+                this.emotes[code] = { id, width, height }
+            }
         }
     }
 
-    async onMessage(message: ChatMessage): Promise<void> {
-        console.log("CALL!");
-        message.segments = Utils.mapSegments(message.segments, segment => {
-            console.log("segment", segment);
+    private onEventHandler(event: ChatBaseEvent) {
+        if (!isEvent<ChatMessageEvent>("CHAT_MESSAGE", event)) return;
+        
+        event.value.segments = Utils.mapSegments(event.value.segments, segment => {
             if (typeof segment !== "string") return;
 
             if (segment in this.emotes) {
-                const emote = this.emotes[segment];
+                const { id, height, width } = this.emotes[segment];
                 return {
                     type: ChatSegmentType.emote,
-                    url: `https://cdn.betterttv.net/emote/${emote.id}/2x.webp`,
-                    options: {
-                        width: emote.width,
-                        height: emote.height
-                    }
-                }
+                    url: `https://cdn.betterttv.net/emote/${id}/3x.webp`,
+                    options: { width, height }
+                };
             }
         });
+    }
+
+    private async initialize() {
+        await this.loadEmotes();
+        this.extension.onEvent(this.onEventHandler.bind(this));
     }
 }

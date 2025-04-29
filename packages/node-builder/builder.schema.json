@@ -1,0 +1,90 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "binary": {
+      "type": "string",
+      "description": "Name of the binary file to be generated"
+    },
+    "outputDir": {
+      "type": "string",
+      "description": "Path to the output files"
+    },
+    "icon": {
+      "type": "string",
+      "description": "Path to the .ico file used as the application icon"
+    },
+    "entryPoint": {
+      "type": "string",
+      "description": "Path to the main entry point of the application"
+    },
+    "envFile": {
+      "type": "string",
+      "description": "Path to the environment variables file"
+    },
+    "versionInfo": {
+      "type": "object",
+      "description": "Metadata about the application version",
+      "properties": {
+        "CompanyName": {
+          "type": "string",
+          "description": "Name of the company that owns the application"
+        },
+        "ProductName": {
+          "type": "string",
+          "description": "Name of the product"
+        },
+        "FileDescription": {
+          "type": "string",
+          "description": "Short description of the file"
+        },
+        "FileVersion": {
+          "type": "string",
+          "description": "Version of the file"
+        },
+        "ProductVersion": {
+          "type": "string",
+          "description": "Version of the product"
+        },
+        "InternalName": {
+          "type": "string",
+          "description": "Internal name of the application"
+        },
+        "LegalCopyright": {
+          "type": "string",
+          "description": "Copyright information for the application"
+        }
+      }
+    },
+    "seaConfig": {
+      "type": "object",
+      "description": "Configuration for SEA (Single Executable Application)",
+      "properties": {
+        "disableExperimentalSEAWarning": {
+          "type": "boolean",
+          "description": "Flag to disable the experimental SEA warning"
+        },
+        "useSnapshot": {
+          "type": "boolean",
+          "description": "Flag to enable the use of snapshots"
+        },
+        "useCodeCache": {
+          "type": "boolean",
+          "description": "Flag to enable the use of code caching"
+        },
+        "assets": {
+          "type": "object",
+          "description": "Additional assets to include in the SEA"
+        }
+      }
+    }
+  },
+  "required": [
+    "icon",
+    "binary",
+    "seaConfig",
+    "outputDir",
+    "entryPoint",
+    "versionInfo"
+  ]
+}

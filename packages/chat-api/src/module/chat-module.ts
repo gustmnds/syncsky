@@ -1,6 +1,6 @@
 import EventEmitter from "eventemitter3";
 import { ChatManager } from "../chat-manager";
-import { ChatMessage } from "../dto/chat-message";
+import { ChatBaseEvent } from "../dto/event-base";
 
 interface ChatModuleEvents {
     stop: [];
@@ -16,27 +16,7 @@ export class ChatModule extends EventEmitter<ChatModuleEvents> {
         super();
     }
     
-    public addMessage(message: Omit<ChatMessage, "platform">) {
-        this.manager.pushMessage({...message, platform: this.platform });
-    }
-
-    public removeMessageById(messageId: string) {
-        this.manager.deleteMessages({
-            messageId,
-            platform: this.platform
-        })
-    }
-
-    public removeMessagesByAuthorId(authorId: string) {
-        this.manager.deleteMessages({
-            authorId,
-            platform: this.platform
-        })
-    }
-
-    public removeAllMessages() {
-        this.manager.deleteMessages({
-            platform: this.platform
-        })
+    public pushEvent<T extends ChatBaseEvent = ChatBaseEvent>(event: Omit<T, "platform">) {
+        this.manager.pushEvent({ ...event, platform: this.platform });
     }
 }

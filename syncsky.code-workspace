@@ -1,0 +1,45 @@
+{
+	"folders": [
+		{
+			"name": "syncsky",
+			"path": "."
+		},
+		{
+			"name": "7tv-chat-extension",
+			"path": "packages/7tv-chat-extension"
+		},
+		{
+			"name": "bttv-chat-extension",
+			"path": "packages/bttv-chat-extension"
+		},
+		{
+			"name": "chat-agent",
+			"path": "packages/chat-agent"
+		},
+		{
+			"name": "chat-api",
+			"path": "packages/chat-api"
+		},
+		{
+			"name": "chat-extension",
+			"path": "packages/chat-extension"
+		},
+		{
+			"name": "chat-overlay",
+			"path": "packages/chat-overlay"
+		},
+		{
+			"name": "chat-ui",
+			"path": "packages/chat-ui"
+		},
+		{
+			"name": "node-builder",
+			"path": "packages/node-builder"
+		},
+		{
+			"name": "twitch-chat-module",
+			"path": "packages/twitch-chat-module"
+		}
+	],
+	"settings": {}
+}
