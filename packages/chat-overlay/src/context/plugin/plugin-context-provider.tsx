@@ -1,31 +1,40 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react"
-import { ChatBaseEvent, NotificationSettings, PluginManager, UIManager } from "@syncsky/chat-api";
-import { PluginContext } from "./plugin-context"
 import axios from "axios"
+import React, { useCallback, useEffect, useMemo, useState } from "react"
+import { ChatBaseEvent, NotificationSettings, PluginManager } from "@syncsky/chat-api";
+import { useUIManager } from "./hooks/use-ui-manager";
+import { PluginContext } from "./plugin-context"
 
 export interface PluginContextProviderProps {
     children: React.ReactNode;
 }
 
 export function PluginContextProvider({ children }: PluginContextProviderProps) {
-
-    const [notifications, setNotifications] = useState(Array<{ props: NotificationSettings<ChatBaseEvent>, Element: React.FC<{ event: ChatBaseEvent }> }>(0));
     const [notificationEvents, setNotificationEvents] = useState(Array<string>());
+    
+    const [notifications, setNotifications] = useState(Array<{
+        props: NotificationSettings<ChatBaseEvent>,
+        Element: React.FC<{ event: ChatBaseEvent }>
+    }>(0));
+
+    const registerNotification = useCallback((
+        element: React.FC<{ event: ChatBaseEvent }>,
+        props: NotificationSettings<ChatBaseEvent>
+    ) => {
+        setNotifications((notifications) => [...notifications, { Element: element, props }]);
+        setNotificationEvents((events) => Array.from(new Set([...events, props.event])));
+    }, []);
+
+    const uiManager = useUIManager({ registerNotification });
+    
     useEffect(() => {
-        const uiManager: UIManager = {
-            registerNotification(element: React.FC<{ event: ChatBaseEvent }>, props) {
-                setNotifications((notifications) => [...notifications, { Element: element, props }]);
-                setNotificationEvents((events) => Array.from(new Set([...events, props.event])));
-            }
-        };
+        if (PluginManager.isHandlerDefined()) return;
 
         PluginManager.setHandler({
-            async uiHandler(ui) {
-                console.log("UI", ui);
+            uiHandler(ui) {
                 ui.register(uiManager);
             }
         });
-    }, []);
+    }, [uiManager]);
 
     useEffect(() => {
         (async() => {
@@ -34,7 +43,7 @@ export function PluginContextProvider({ children }: PluginContextProviderProps) 
                 const scriptElement = document.createElement("script");
                 scriptElement.type = "module";
                 scriptElement.src = scriptPath;
-                document.body.append(scriptElement);
+                document.head.append(scriptElement);
             }
         })();
     }, []);

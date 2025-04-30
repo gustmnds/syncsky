@@ -1,7 +1,7 @@
 import { NotificationProps } from "@syncsky/chat-api";
-import { NotificationBase, PlatformBadge } from "@syncsky/chat-ui";
+import { NotificationBase } from "@syncsky/chat-ui";
 import { SubEvent } from "../twitch-events";
-import { useState } from "react";
+import { TwitchBadge } from "../badge/twitch";
 
 export function SubNotification({ event }: NotificationProps<SubEvent>) {
     return (
@@ -12,7 +12,7 @@ export function SubNotification({ event }: NotificationProps<SubEvent>) {
                     se inscreveu por <b>{event.value.months}</b> meses
                     {event.value.isPrime && " usando prime"}
                 </span>}
-            icon={<PlatformBadge platform={event.platform} size={20}/>}
+            icon={<TwitchBadge size={20}/>}
         />
     );
 }

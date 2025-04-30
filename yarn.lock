@@ -1450,6 +1450,7 @@ __metadata:
   dependencies:
     "@syncsky/chat-api": "npm:0.0.0"
     axios: "npm:^1.8.3"
+    esbuild: "npm:^0.25.3"
     eventemitter3: "npm:^5.0.1"
     typescript: "npm:^5.8.2"
   languageName: unknown
@@ -1461,6 +1462,7 @@ __metadata:
   dependencies:
     "@syncsky/chat-api": "npm:0.0.0"
     axios: "npm:^1.8.3"
+    esbuild: "npm:^0.25.3"
     eventemitter3: "npm:^5.0.1"
     typescript: "npm:^5.8.2"
   languageName: unknown

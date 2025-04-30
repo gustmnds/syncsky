@@ -1,11 +1,26 @@
-import { ChatMessageEvent, ChatMessageFilterEvent, ChatMessageModifier, ChatModule, ChatModuleManager, Utils } from "@syncsky/chat-api";
+import { ApiClient } from "@twurple/api"
 import { StaticAuthProvider } from "@twurple/auth"
 import { ChatClient, ChatMessage } from "@twurple/chat"
-import { ApiClient } from "@twurple/api"
+import { EventSubWsListener } from "@twurple/eventsub-ws";
+import {
+    ChatMessageEvent,
+    ChatMessageFilterEvent,
+    ChatMessageModifier,
+    ChatModule,
+    Utils
+} from "@syncsky/chat-api";
+
 import { TwitchBadgeClient } from "./twitch-badge-client";
 import { TwitchEmoteService } from "./twitch-emote-service";
-import { EventSubWsListener } from "@twurple/eventsub-ws";
-import { BitsEvent, CommunityGiftSubEvent, GiftSubEvent, RaidEvent, ResubEvent, SubEvent } from "./twitch-events";
+import {
+    BitsEvent,
+    CommunityGiftSubEvent,
+    GiftSubEvent,
+    RaidEvent,
+    ResubEvent,
+    RewardEvent,
+    SubEvent
+} from "./twitch-events";
 
 export interface TwitchChatSettings {
     clientId: string;
@@ -152,22 +167,25 @@ export class TwitchChatModule {
             });
         });
 
-        //this.eventSub.onChannelFollow(this.opts.channelId, this.opts.channelId, (event) => {
-        //    event.userName
-        //    this.chatModule.pushEvent({
-        //        event: "FOLLOW",
-        //        value: {
-        //            name: event.broadcasterDisplayName
-        //        }
-        //    });
-        //});
-
-        /*
+        this.eventSub.onChannelFollow(this.opts.channelId, this.opts.channelId, (event) => {
+            event.userName
+            this.chatModule.pushEvent({
+                event: "FOLLOW",
+                value: {
+                    name: event.broadcasterDisplayName
+                }
+            });
+        });
+        
         this.eventSub.onChannelRedemptionAdd(this.opts.channelId, async(event) => {
-            const reward = await event.getReward()
-            console.log("REWARD", reward.title, event.broadcasterDisplayName);
+            this.chatModule.pushEvent<RewardEvent>({
+                event: "REWARD",
+                value: {
+                    name: event.userDisplayName,
+                    title: event.rewardTitle
+                }
+            });
         })
-        */
     }
 
     private getMessageModifiers(message: ChatMessage): ChatMessageModifier[] {
@@ -182,12 +200,15 @@ export class TwitchChatModule {
     private setupDisconnect() {
         this.chatModule.on("disconnect", () => {
             this.chatClient.quit();
+            this.eventSub.stop();
         });
         this.chatModule.on("stop", () => {
             this.chatClient.quit();
+            this.eventSub.stop();
         });
         this.chatModule.on("resume", () => {
             this.chatClient.connect();
+            this.eventSub.start();
         });
     }
 
@@ -196,7 +217,6 @@ export class TwitchChatModule {
 
         await this.badgeClient.loadBadges();
         await this.emoteService.load();
-        //TEMP
         this.eventSub.start();
 
         this.setupMessageHandler();

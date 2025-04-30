@@ -7,7 +7,7 @@ esbuild.build({
   platform: "node",
   external: [],
   outdir: "dist",
-  minify: true,
+  minify: false,
   legalComments: "none"
 });
 
@@ -18,9 +18,9 @@ esbuild.build({
   platform: "browser",
   external: [],
   outdir: "dist",
-  minify: true,
+  minify: false,
   legalComments: "none",
   loader: {
-    ".png": "dataurl"
+    ".png": "file",
   }
 });

@@ -1,13 +1,13 @@
 import { NotificationProps } from "@syncsky/chat-api";
 import { NotificationBase } from "@syncsky/chat-ui";
-import { BitsEvent } from "../twitch-events";
+import { RewardEvent } from "../twitch-events";
 import { TwitchBadge } from "../badge/twitch";
 
-export function BitsNotification({ event }: NotificationProps<BitsEvent>) {
+export function RewardNotification({ event }: NotificationProps<RewardEvent>) {
     return (
         <NotificationBase
             title={<b>{event.value.name}</b>}
-            text={<span>enviou <b>{event.value.bits}</b> bits</span>}
+            text={<span>resgatou <b>{event.value.title}</b></span>}
             icon={<TwitchBadge size={20}/>}
         />
     );

@@ -4,4 +4,5 @@ export { FollowNotification } from "./follow-notification";
 export { GiftSubNotification } from "./giftsub-notification";
 export { RaidNotification } from "./raid-notification";
 export { ResubNotification } from "./resub-notification";
+export { RewardNotification } from "./reward-notification";
 export { SubNotification } from "./sub-notification";

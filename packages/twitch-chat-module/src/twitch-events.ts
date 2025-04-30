@@ -31,3 +31,8 @@ export interface BitsEvent extends ChatBaseEvent<"BITS", {
     name: string;
     bits: number;
 }> {}
+
+export interface RewardEvent extends ChatBaseEvent<"REWARD", {
+    name: string;
+    title: string;
+}> {}

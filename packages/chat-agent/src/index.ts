@@ -3,7 +3,7 @@ import { PluginManager } from "@syncsky/chat-api";
 import { app } from "./api";
 import { APP_PORT } from "./settings";
 import { ServerManager } from "./server";
-import { loadPlugin } from "./plugin-loader";
+import { loadExtension, loadModule } from "./plugin-loader";
 import { PluginResolver } from "./plugins/plugin-resolver";
 
 async function main() {
@@ -13,13 +13,19 @@ async function main() {
     PluginResolver.searchPlugins();
 
     PluginManager.setHandler({
-        moduleHandler: loadPlugin.bind(null, server.chatManager)
+        moduleHandler: loadModule.bind(null, server.chatManager),
+        extensionHandler: loadExtension.bind(null, server.chatManager)
     });
 
     for (const plugin of PluginResolver.plugins) {
         const moduleEntryPoint = plugin.entryPoints["module"];
         if (moduleEntryPoint) {
             require(moduleEntryPoint);
+        }
+
+        const extensionEntryPoint = plugin.entryPoints["extension"];
+        if (extensionEntryPoint) {
+            require(extensionEntryPoint);
         }
     }
 

@@ -11,6 +11,7 @@ export interface NotificationProps<T extends ChatBaseEvent> {
 }
 
 export interface UIManager {
+    resolvePath(pluginName: string, path: string): string;
     registerNotification<T extends ChatBaseEvent>(
         element: React.FC<NotificationProps<T>>, 
         settings: NotificationSettings<T>
@@ -21,4 +22,4 @@ export interface PluginUI {
     register(ui: UIManager): void;
 }
 
-export type PluginUIHandler = (ui: PluginUI) => Promise<void>;
+export type PluginUIHandler = (ui: PluginUI) => void;

@@ -41,18 +41,23 @@ export class BTTVChatExtension {
         this.initialize();
     };
 
-    public static register(chatExtensionManager: ChatExtensionManager, opts: BTTVChatExtensionProps) {
-        const extension = chatExtensionManager.createExtension();
-        return new BTTVChatExtension(extension, opts);
+    public static register(chatExtension: ChatExtension, opts: BTTVChatExtensionProps) {
+        return new BTTVChatExtension(chatExtension, opts);
     }
 
     private async loadEmotes(): Promise<void> {
-        const [globalEmotes, userEmotes] = await Promise.all([
-            await this.api.get<GlobalEmote[]>("/cached/emotes/global"),
-            await this.api.get<UserEmotes>("/cached/users/twitch/" + this.opts.channelId).catch(() => undefined)
+        const [globalEmotes, frankerfacezEmotes, userEmotes/*, frankerfacezUserEmotes*/] = await Promise.all([
+            this.api.get<GlobalEmote[]>("/cached/emotes/global"),
+            this.api.get<GlobalEmote[]>("/cached/frankerfacez/emotes/global"),
+            this.api.get<UserEmotes>("/cached/users/twitch/" + this.opts.channelId).catch(() => undefined),
+            //this.api.get<UserEmotes>("/cached/frankerfacez/users/twitch/" + this.opts.channelId).catch(() => undefined)
         ]);
 
         for (const { id, code, height, width } of globalEmotes.data) {
+            this.emotes[code] = { id, height, width };
+        }
+
+        for (const { id, code, height, width } of frankerfacezEmotes.data) {
             this.emotes[code] = { id, height, width };
         }
 
@@ -61,6 +66,12 @@ export class BTTVChatExtension {
                 this.emotes[code] = { id, width, height }
             }
         }
+
+        //if (frankerfacezUserEmotes) {
+        //    for (const { id, code, width, height } of frankerfacezUserEmotes.data.sharedEmotes) {
+        //        this.emotes[code] = { id, width, height }
+        //    }
+        //}
     }
 
     private onEventHandler(event: ChatBaseEvent) {

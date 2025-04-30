@@ -1,6 +1,5 @@
 import { ChatBaseEvent, ChatMessageEvent, ChatSegmentType, isEvent, Utils } from "@syncsky/chat-api";
 import { ChatExtension } from "@syncsky/chat-api/src/extension/chat-extension";
-import { ChatExtensionManager } from "@syncsky/chat-api/src/extension/chat-extension-manager";
 import axios from "axios"
 
 interface Emote {
@@ -52,14 +51,12 @@ export class SevenTVChatExtension {
         this.initialize();
     };
 
-    public static register(chatExtensionManager: ChatExtensionManager, opts: SevenTVChatExtensionProps) {
-        const extension = chatExtensionManager.createExtension();
-        return new SevenTVChatExtension(extension, opts);
+    public static register(chatExtension: ChatExtension, opts: SevenTVChatExtensionProps) {
+        return new SevenTVChatExtension(chatExtension, opts);
     }
 
     private async loadEmotes(): Promise<void> {
         const { data, status } = await this.api.get<SevenTVUserEmoteResponse>("/users/twitch/" + this.opts.channelId);
-        
         if (status !== 200 || !data.emote_set) return;
         
         for (const emote of data.emote_set.emotes) {

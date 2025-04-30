@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "packageManager": "yarn@4.2.2",
   "devDependencies": {
+    "esbuild": "^0.25.3",
     "typescript": "^5.8.2"
   },
   "dependencies": {

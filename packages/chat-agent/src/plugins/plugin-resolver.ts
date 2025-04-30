@@ -9,7 +9,7 @@ interface PluginInfo {
 
 export class PluginResolver {
     public static readonly plugins = Array<PluginInfo>();
-    private static readonly PLUGIN_FILES = ["module.js", "ui.js"];
+    private static readonly PLUGIN_FILES = ["module.js", "ui.js", "extension.js"];
 
     public static searchPlugins() {
         const pluginsFolder = this.getPluginsFolder();

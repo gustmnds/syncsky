@@ -34,6 +34,11 @@ RegisterUI({
         );
 
         ui.registerNotification(
+            Notifications.RewardNotification,
+            { platform: "twitch", event: "REWARD" }
+        );
+
+        ui.registerNotification(
             Notifications.SubNotification,
             { platform: "twitch", event: "SUB" }
         );

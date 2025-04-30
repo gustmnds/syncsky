@@ -1,5 +1,5 @@
 import { NotificationProps } from "@syncsky/chat-api";
-import { NotificationBase, PlatformBadge } from "@syncsky/chat-ui";
+import { NotificationBase } from "@syncsky/chat-ui";
 import { ResubEvent } from "../twitch-events";
 import { TwitchBadge } from "../badge/twitch";
 

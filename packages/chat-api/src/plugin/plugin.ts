@@ -1,10 +1,12 @@
 import { isBrowser, isNode } from "browser-or-node";
 import { PluginModuleHandler } from './plugin-module';
 import { PluginUIHandler } from './plugin-ui';
+import { PluginExtensionHandler } from "./plugin-extension";
 
 type PluginHandlers = {
-    moduleHandler?: PluginModuleHandler;
     uiHandler?: PluginUIHandler;    
+    moduleHandler?: PluginModuleHandler;
+    extensionHandler?: PluginExtensionHandler;
 }
 
 const PLUGIN_MANAGER_SYMBOL = Symbol.for("PLUGIN_MANAGER_SYMBOL");
@@ -14,6 +16,12 @@ function getTarget() {
 }
 
 export class PluginManager {
+    public static isHandlerDefined() {
+        const target = getTarget();
+        if (!target) return false;
+        return (PLUGIN_MANAGER_SYMBOL in target);
+    }
+
     public static setHandler(pluginHandler: PluginHandlers): void {
         const target = getTarget();
 
@@ -54,3 +62,4 @@ function createRegister<T extends keyof PluginHandlers>(func: T): Required<Plugi
 
 export const RegisterUI = createRegister("uiHandler");
 export const RegisterModule = createRegister("moduleHandler");
+export const RegisterExtension = createRegister("extensionHandler");

@@ -9,9 +9,9 @@ interface AgentContextProviderProps {
 
 export function AgentContextProvider({ children }: AgentContextProviderProps) {
     const { streamerMode } = useOverlayContext();    
-    const host = useMemo(() => streamerMode ? window.location.host : "http://127.0.0.1:58325", [streamerMode]);
+    const host = useMemo(() => streamerMode ? window.location.origin : "http://127.0.0.1:58325", [streamerMode]);
     const socket = useMemo(() => io(host), [host]);
-    const value = useMemo(() => ({ socket }), [socket])
+    const value = useMemo(() => ({ socket, host }), [socket, host]);
 
     return (
         <AgentContext.Provider value={value}>
